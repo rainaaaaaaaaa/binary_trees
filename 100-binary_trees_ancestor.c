@@ -1,50 +1,60 @@
 #include "binary_trees.h"
 
 /**
- * binary_trees_ancestor - Finds the lowest common ancestor of two nodes
- *
- * @first: Pointer to the first node
- * @second: Pointer to the second node
- * Return: Pointer to the lowest common ancestor node,
- *         or NULL if no common ancestor was found
+ * binary_tree_depth - measures the depth of a node in a binary tree
+ * @tree: tree
+ * Return: depth
  */
-binary_tree_t *binary_trees_ancestor(const binary_tree_t *first, const binary_tree_t *second)
+size_t binary_tree_depth(const binary_tree_t *tree)
 {
-    const binary_tree_t *ancestor;
-
-    /* If any node is NULL, return NULL */
-    if (first == NULL || second == NULL)
-        return (NULL);
-
-    /* Start from the root */
-    ancestor = first;
-    while (ancestor)
-    {
-        /* Check if the ancestor is the LCA */
-        if (binary_tree_is_ancestor(ancestor, second))
-            return ((binary_tree_t *)ancestor);
-
-        /* Move up to the parent */
-        ancestor = ancestor->parent;
-    }
-
-    return (NULL);
+	if (tree && tree->parent)
+		return (1 + binary_tree_depth(tree->parent));
+	return (0);
 }
 
 /**
- * binary_tree_is_ancestor - Checks if a node is an ancestor of another node
- *
- * @ancestor: Pointer to the potential ancestor node
- * @node: Pointer to the potential descendant node
- * Return: 1 if ancestor is an ancestor of node, 0 otherwise
+ * binary_trees_ancestor - finds the lowest common ancestor of two nodes
+ * @first: first
+ * @second: second
+ * Return: a pointer
  */
-int binary_tree_is_ancestor(const binary_tree_t *ancestor, const binary_tree_t *node)
+binary_tree_t *binary_trees_ancestor(const binary_tree_t *first,
+		const binary_tree_t *second)
 {
-	while (node)
+	size_t dep1, dep2;
+	const binary_tree_t *t1, *t2;
+
+	dep1 = binary_tree_depth(first);
+	dep2 = binary_tree_depth(second);
+
+	if (dep1 == 0 || dep2 == 0)
+		return (NULL);
+
+
+	t1 = first;
+	t2 = second;
+	if (dep1 > dep2)
 	{
-		if (node == ancestor)
-			return (1);
-		node = node->parent;
+		while (dep1 != dep2)
+		{
+			t1 = t1->parent;
+			dep1--;
+		}
 	}
-	return (0);
+	else if (dep1 < dep2)
+	{
+		while (dep1 != dep2)
+		{
+			t2 = t2->parent;
+			dep2--;
+		}
+	}
+
+	while (t1 != t2)
+	{
+		t1 = t1->parent;
+		t2 = t2->parent;
+	}
+
+	return ((binary_tree_t *)t1);
 }

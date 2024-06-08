@@ -1,4 +1,4 @@
-#include "binary_trees_plus.h"
+#include "binary_trees.h"
 
 /**
  * array_to_bst - function that builds a Binary
